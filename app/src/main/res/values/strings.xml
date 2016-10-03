@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">QuieroMi</string>
+    <string name="title_activity_main">Main</string>
+    <string name="title_activity_map">Map</string>
+    <string name="title_activity_firebase">Firebase</string>
+    <string name="map_button">Map</string>
+    <string name="firebase_button">Firebase</string>
+    <string name="quieromi_button">Quiero Mi</string>
+</resources>

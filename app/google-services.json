@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "865687054051",
+    "firebase_url": "https://quieromi-10873.firebaseio.com",
+    "project_id": "quieromi-10873",
+    "storage_bucket": "quieromi-10873.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865687054051:android:d53a08d2a4b92b1e",
+        "android_client_info": {
+          "package_name": "com.brunix.quieromi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "865687054051-q3caprn0dnsarvm3m8s3d8nooobro78q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXsmRon5_UlJPUA620LyBlhXileltmX2g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
