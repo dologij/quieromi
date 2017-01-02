@@ -1,13 +1,10 @@
-package com.brunix.quieromi.model;
+package com.brunix.quieromi.data.entity;
 
 import com.google.firebase.database.Exclude;
-
-import org.joda.money.Money;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by dolo on 9/14/16.

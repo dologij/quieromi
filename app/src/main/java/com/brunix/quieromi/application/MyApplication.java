@@ -3,6 +3,10 @@ package com.brunix.quieromi.application;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
+import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
+import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
+import com.brunix.quieromi.BuildConfig;
+import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.firebase.FirebaseApp;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
@@ -11,6 +15,34 @@ import com.squareup.leakcanary.RefWatcher;
  * Created by dolo on 9/19/16.
  */
 public class MyApplication extends MultiDexApplication {
+
+//    public static DetailedAndroidLogger L;
+
+    private ApplicationComponent applicationComponent;
+
+    protected void createApplicationComponent() {
+        applicationComponent = DaggerApplicationComponent
+                .builder().applicationModule(new ApplicationModule(this))
+                .networkModule(new NetworkModule(this))
+                .build();
+    }
+
+    /**
+     * Static method that can be used by any class that isn't a Context, but
+     * does have access to Context object, in order to get the Application object.
+     * @param context The current context that the caller has access to.
+     * @return The instance of {@link MyApplication}
+     */
+    public static MyApplication get(Context context) {
+        return (MyApplication) context.getApplicationContext();
+    }
+
+    public ApplicationComponent getApplicationComponent() {
+        if (applicationComponent == null) {
+            createApplicationComponent();
+        }
+        return applicationComponent;
+    }
 
     // LeakCanary
     private RefWatcher refWatcher;
@@ -24,6 +56,14 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+//        L = new DetailedAndroidLogger("QUIEROMI", IAndroidLogger.LoggingLevel.DEBUG);
+
+        //AndroidDevMetrics: Use it only in debug builds
+        if (BuildConfig.DEBUG_MODE) {
+            AndroidDevMetrics.initWith(this);
+        }
+
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.

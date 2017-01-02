@@ -9,9 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.brunix.quieromi.model.Bar;
-import com.brunix.quieromi.model.DummyData;
-import com.brunix.quieromi.model.Tapa;
+import com.brunix.quieromi.data.entity.Bar;
+import com.brunix.quieromi.data.entity.DummyData;
+import com.brunix.quieromi.data.entity.Tapa;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

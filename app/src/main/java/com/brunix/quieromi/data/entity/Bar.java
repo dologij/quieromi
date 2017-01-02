@@ -1,4 +1,4 @@
-package com.brunix.quieromi.model;
+package com.brunix.quieromi.data.entity;
 
 import com.google.firebase.database.Exclude;
 

@@ -1,0 +1,22 @@
+ext.versions = [
+        dagger                       : '2.0.1',
+
+        rxJava                       : '1.1.6',
+        rxAndroid                    : '1.2.1',
+        supportLibs                  : '23.1.0',
+        multidex                     : '1.0.1',
+        butterKnife                  : '8.4.0',
+        picasso                      : '2.5.2',
+        parceler                     : '1.1.5',
+        annotation                   : '1.2',
+
+        leakCanary                   : '1.5',
+
+        gPlayServices                : '9.4.0',
+        firebaseDb                   : '9.4.0',
+        firebaseUiDb                 : '0.5.3',
+
+        advancedLogger               : '1.0.7@aar',
+
+        junit                        : '4.12',
+]

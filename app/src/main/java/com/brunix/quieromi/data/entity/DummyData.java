@@ -1,10 +1,8 @@
-package com.brunix.quieromi.model;
+package com.brunix.quieromi.data.entity;
 
 import com.brunix.quieromi.Utils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
