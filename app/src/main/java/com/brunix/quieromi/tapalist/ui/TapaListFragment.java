@@ -171,8 +171,14 @@ public class TapaListFragment extends Fragment implements TapaListView {
 */
 
     @Override
-    public void sendNewTapaToAdapter(Tapa tapa) {
-        adapter.addNewTapa(tapa);
+    public void sendTapaToAdapter(Tapa tapa) {
+        adapter.addTapa(tapa);
+        recyclerView.scrollToPosition(0);
+    }
+
+    @Override
+    public void removeTapaFromAdapter(String tapaId) {
+        adapter.removeTapa(tapaId);
         recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 

@@ -15,16 +15,17 @@ public class DummyData {
             UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString(), UUID.randomUUID().toString()};
     static String[] names = {"Jack Jones", "Mike Malone", "Peter Pan"
             , "Rodney Roper", "Harry Horne", "Casey Clarke", "Bernie Bunting"};
-    static double[] prices = {34.56, 43.21, 19.65, 58.90,32.91,82.76,15.03};
-    static double[] longitudes = {12.3456, 65.4321, 19.8765, 56.7890, 37.5291, 98.3276, 18.2503};
-    static double[] latitudes = {-12.3456, -65.4321, -19.8765, -56.7890, -37.5291, -98.3276, -18.2503};
+    static double[] prices = {34.56, 43.21, 19.65, 58.90, 32.91, 82.76, 15.03};
+    static double[] longitudes = {-80.1055376, 2.1817251, -6.9730373, 14.1197316, -17.9145562, -7.1655582, -5.664467};
+    static double[] latitudes = {26.2754584, 41.4234447, 38.878818, 57.4966613, 28.659471, 38.8799428, 40.9706544};
     static String imageUrl = "http://www.amys.com/images/uploads/special_diets/healthy_living/vegetarian_plate.jpg";
 
     public static HashMap<String, Bar> getDummyBarsAsHashMap() {
         HashMap<String, Bar> barsHashMap = new HashMap<>();
         for (int i = 0; i < names.length; i++) {
+            String suffix = String.valueOf(System.currentTimeMillis());
             Bar bar = new Bar();
-            bar.setName(names[i]);
+            bar.setName(names[i] + " " + suffix.substring(suffix.length()-5, suffix.length()-1));
             bar.setLongitude(longitudes[i]);
             bar.setLatitude(latitudes[i]);
 
@@ -36,9 +37,10 @@ public class DummyData {
     public static HashMap<String, Tapa> getDummyTapasAsHashMap() {
         HashMap<String, Tapa> tapasHashMap = new HashMap<>();
         for (int i = 0; i < names.length; i++) {
+            String suffix = String.valueOf(System.currentTimeMillis());
             Tapa tapa = new Tapa();
             tapa.setId(uuids[i]);
-            tapa.setName(names[i]);
+            tapa.setName(names[i] + " " + suffix.substring(suffix.length()-5, suffix.length()-1));
             tapa.setPrice(prices[i]);
             tapa.setLongitude(longitudes[i]);
             tapa.setLatitude(latitudes[i]);

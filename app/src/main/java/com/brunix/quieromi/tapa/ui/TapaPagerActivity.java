@@ -114,9 +114,15 @@ public class TapaPagerActivity extends AppCompatActivity implements TapaListView
     }
 
     @Override
-    public void sendNewTapaToAdapter(Tapa tapa) {
+    public void sendTapaToAdapter(Tapa tapa) {
         adapter.addNewTapa(tapa);
         viewPager.setCurrentItem(adapter.getPositionFromId(selectedTapaId));
+    }
+
+    @Override
+    public void removeTapaFromAdapter(String tapaId) {
+//        adapter.removeTapa(tapa);
+//        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     @Override

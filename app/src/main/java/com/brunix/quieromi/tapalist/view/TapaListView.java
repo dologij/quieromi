@@ -9,7 +9,9 @@ import com.brunix.quieromi.data.entity.Tapa;
 
 public interface TapaListView extends BaseView {
 
-    void sendNewTapaToAdapter(Tapa tapa);
+    void sendTapaToAdapter(Tapa tapa);
+
+    void removeTapaFromAdapter(String tapaId);
 
     void showErrorMessage();
 

@@ -13,6 +13,7 @@ import com.jakewharton.rxbinding.view.RxView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,8 +45,24 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
         notifyDataSetChanged();
     }
 
-    public void addNewTapa(Tapa tapa) {
-        tapas.add(tapa);
+    public void addTapa(Tapa pTapa) {
+        for(Iterator<Tapa> it = tapas.iterator(); it.hasNext();){
+            Tapa tapa = it.next();
+            if (tapa.getId().equals(pTapa.getId())) {
+                it.remove();
+            }
+        }
+        tapas.add(pTapa);
+        notifyDataSetChanged();
+    }
+
+    public void removeTapa(String tapaId) {
+        for(Iterator<Tapa> it = tapas.iterator(); it.hasNext();){
+            Tapa tapa = it.next();
+            if (tapa.getId().equals(tapaId)) {
+                it.remove();
+            }
+        }
         notifyDataSetChanged();
     }
 

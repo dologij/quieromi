@@ -9,4 +9,5 @@
     <string name="firebase_button">Firebase</string>
     <string name="quieromi_button">Quiero Mi</string>
     <string name="random_username_generator_string_template">User %1$d</string>
+    <string name="price">%1$s €</string>
 </resources>

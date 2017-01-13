@@ -1,5 +1,7 @@
 package com.brunix.quieromi.tapalist.presenter;
 
+import android.util.Log;
+
 import com.brunix.quieromi.Utils;
 import com.brunix.quieromi.data.DatabaseHelper;
 import com.brunix.quieromi.data.entity.Tapa;
@@ -75,27 +77,42 @@ public class TapaListPresenterImpl implements TapaListPresenter {
         return new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded");
                 Tapa tapa = dataSnapshot.getValue(Tapa.class);
                 if (tapa != null) {
                     tapa.setId(dataSnapshot.getKey());
-                    tapaListView.sendNewTapaToAdapter(tapa);
+                    tapaListView.sendTapaToAdapter(tapa);
                 }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged");
+                Tapa tapa = dataSnapshot.getValue(Tapa.class);
+                if (tapa != null) {
+                    tapa.setId(dataSnapshot.getKey());
+                    tapaListView.sendTapaToAdapter(tapa);
+                }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved");
+                Tapa tapa = dataSnapshot.getValue(Tapa.class);
+                if (tapa != null) {
+                    tapa.setId(dataSnapshot.getKey());
+                    tapaListView.removeTapaFromAdapter(tapa.getId());
+                }
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildMoved");
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "onCancelled");
                 if (databaseError != null) {
                     Utils.logError(databaseError.toException());
                 }

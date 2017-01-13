@@ -8,7 +8,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +31,7 @@ public class DatabaseHelperImpl implements DatabaseHelper {
     public void receiveTapasFromFirebase(int viewId, ChildEventListener listener) {
         final DatabaseReference reference = firebaseDatabase.getReference(FirebaseConstants.TAPAS_REFERENCE);
         addListenerToMap(new Integer(viewId), reference, listener);
-        reference.orderByValue().limitToLast(FirebaseConstants.RETRIEVED_TAPAS_LIMIT).addChildEventListener(listener);
+        reference.orderByChild("name").limitToLast(FirebaseConstants.RETRIEVED_TAPAS_LIMIT).addChildEventListener(listener);
     }
 
     private void addListenerToMap(Integer objectId, DatabaseReference reference, ChildEventListener listener) {

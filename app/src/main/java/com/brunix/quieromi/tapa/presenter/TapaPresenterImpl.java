@@ -1,13 +1,9 @@
 package com.brunix.quieromi.tapa.presenter;
 
-import android.util.Log;
-
 import com.brunix.quieromi.Utils;
 import com.brunix.quieromi.data.DatabaseHelper;
 import com.brunix.quieromi.data.entity.Tapa;
 import com.brunix.quieromi.tapa.view.TapaView;
-import com.brunix.quieromi.tapalist.view.TapaListView;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;

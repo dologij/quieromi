@@ -12,6 +12,23 @@
         android:layout_height="wrap_content"
         style="?android:listSeparatorTextViewStyle"/>
 
+    <EditText
+        android:id="@+id/tapa_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"/>
+
+    <EditText
+        android:id="@+id/tapa_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"/>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/tapa_mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="5dp"/>
     <!--Button
         android:id="@+id/crime_date"
         android:layout_width="match_parent"
