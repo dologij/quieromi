@@ -26,13 +26,13 @@ public interface FirebaseApi {
         Call<Tapa> getTapaById(@Path("id") String id); // could be used for fetching details or checking if item already exists
 
         @GET("/tapas/{id}.json")
-        Observable<Tapa> getTapaByIdRx(@Path("id") String id); // could be used for fetching details or checking if item already exists
+        Observable<Tapa> getTapaByIdRx(@Path("id") String id);
 
         @GET("/tapas/.json")
         Call<Map<String, Tapa>> getTapas(); // note that we'll receive a Map here from firebase with key being the identifier
 
         @GET("/tapas/.json")
-        Observable<Map<String, Tapa>> getTapasRx(); // note that we'll receive a Map here from firebase with key being the identifier
+        Observable<Map<String, Tapa>> getTapasRx();
 
         @DELETE("/tapas/{id}.json")
         Call<Tapa> deleteTapa(@Path("title") String title);

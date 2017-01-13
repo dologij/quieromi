@@ -2,6 +2,7 @@ package com.brunix.quieromi.data;
 
 import com.brunix.quieromi.data.entity.Tapa;
 
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -12,5 +13,6 @@ import rx.Observable;
 public interface TapasRepo {
     Observable<Tapa> getTapa (final String tapaId);
 
-    Observable<Map<String, Tapa>> getAllTapas ();
+//    Observable<Map<String, Tapa>> getAllTapas ();
+    Observable<List<Tapa>> getAllTapas ();
 }

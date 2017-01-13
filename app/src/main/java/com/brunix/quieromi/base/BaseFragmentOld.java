@@ -11,8 +11,6 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
-import com.brunix.quieromi.application.MyApplication;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -20,9 +18,9 @@ import butterknife.Unbinder;
  * Created by dolo on 12/27/16.
  */
 
-public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BaseView {
+public abstract class BaseFragmentOld<P extends BasePresenterOld> extends Fragment implements BaseViewOld {
 
-    private final static String TAG = BaseFragment.class.getSimpleName();
+    private final static String TAG = BaseFragmentOld.class.getSimpleName();
 
     private Unbinder unbinder;
 

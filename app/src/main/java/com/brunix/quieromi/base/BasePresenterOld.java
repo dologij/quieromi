@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
  * a AppView(my preferred option)or anything alse(although the former options are the
  * ones that make more sense)
  */
-public abstract class BasePresenter<V extends BaseView> {
+public abstract class BasePresenterOld<V extends BaseViewOld> {
 
     /**
      * The attached view.

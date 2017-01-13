@@ -6,8 +6,12 @@ import android.support.multidex.MultiDexApplication;
 import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
 import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.brunix.quieromi.BuildConfig;
+import com.brunix.quieromi.data.DatabaseHelper;
+import com.brunix.quieromi.data.DatabaseHelperImpl;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -19,6 +23,10 @@ public class MyApplication extends MultiDexApplication {
 //    public static DetailedAndroidLogger L;
 
     private ApplicationComponent applicationComponent;
+
+    // TODO: Inject dependency
+    private DatabaseHelper databaseHelper;
+//    private AuthenticationHelper authenticationHelper;
 
     protected void createApplicationComponent() {
         applicationComponent = DaggerApplicationComponent
@@ -74,6 +82,14 @@ public class MyApplication extends MultiDexApplication {
 
         if (!FirebaseApp.getApps(this).isEmpty()) {
             //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
+            // TODO: this code goes inside the correspondant module (when providing dependencies)
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true); // dangerous, maybe this should not be called
+            instance = this;
+            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            databaseHelper = new DatabaseHelperImpl(firebaseDatabase);
+//            authenticationHelper = new AuthenticationHelperImpl(firebaseAuth);
         }
 
     }
@@ -93,4 +109,13 @@ public class MyApplication extends MultiDexApplication {
         if (refWatcher != null)
             refWatcher.watch(object);
     }
+
+    public DatabaseHelper getDatabaseHelper() {
+        return databaseHelper;
+    }
+
+//    public AuthenticationHelper getAuthenticationHelper() {
+//        return authenticationHelper;
+//    }
+
 }

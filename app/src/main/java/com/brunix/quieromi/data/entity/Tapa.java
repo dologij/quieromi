@@ -1,5 +1,7 @@
 package com.brunix.quieromi.data.entity;
 
+import com.brunix.quieromi.Utils;
+import com.brunix.quieromi.base.BaseModel;
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -9,7 +11,7 @@ import java.util.Map;
 /**
  * Created by dolo on 9/14/16.
  */
-public class Tapa {
+public class Tapa extends BaseModel {
 
     @Exclude
     String id;
@@ -111,5 +113,10 @@ public class Tapa {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", reports=" + reports +
                 '}';
+    }
+
+    @Override
+    protected boolean validate() {
+        return !Utils.stringsAreNullOrEmpty(id, name, String.valueOf(price));
     }
 }

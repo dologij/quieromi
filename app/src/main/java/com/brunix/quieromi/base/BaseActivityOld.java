@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
  * @param <P> is your AppPresenter impl, takes care of attaching and detaching view when need. Same could be implemented for a Fragment if using
  *            fragments also.
  */
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView {
+public abstract class BaseActivityOld<P extends BasePresenterOld> extends AppCompatActivity implements BaseViewOld {
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {

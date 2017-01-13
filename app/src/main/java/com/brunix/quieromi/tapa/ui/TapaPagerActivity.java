@@ -9,27 +9,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.brunix.quieromi.R;
+import com.brunix.quieromi.ViewIdManager;
 import com.brunix.quieromi.application.MyApplication;
-import com.brunix.quieromi.data.Dao;
 import com.brunix.quieromi.data.entity.Tapa;
-import com.google.firebase.database.DataSnapshot;
-import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
+import com.brunix.quieromi.tapalist.presenter.TapaListPresenterImpl;
+import com.brunix.quieromi.tapalist.view.TapaListView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observer;
-import rx.functions.Func1;
 
 /**
  * Created by dolo on 9/21/16.
  */
 
-public class TapaPagerActivity extends AppCompatActivity {
+public class TapaPagerActivity extends AppCompatActivity implements TapaListView {
 
     private final static String TAG = TapaPagerActivity.class.getSimpleName();
 
@@ -37,14 +30,19 @@ public class TapaPagerActivity extends AppCompatActivity {
             "com.brunix.quieromi.ui.tapa_id";
 
     @BindView(R.id.activity_tapa_pager_view_pager)
-    ViewPager mViewPager;
+    ViewPager viewPager;
 
-    private List<Tapa> mTapas;
+//    private List<Tapa> tapas;
 
-    private TapaPagerAdapter mAdapter;
+    private TapaPagerAdapter adapter;
 
-    @Inject
-    Dao dao;
+    private TapaListPresenterImpl presenter;
+
+    private String selectedTapaId;
+    private int viewId;
+
+//    @Inject
+//    Dao dao;
 
     public static Intent newIntent(Context packageContext, String tapaId) {
         Intent intent = new Intent(packageContext, TapaPagerActivity.class);
@@ -55,6 +53,7 @@ public class TapaPagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewId = ViewIdManager.getViewId(this);
         setContentView(R.layout.activity_tapa_pager);
         ButterKnife.bind(this);
 
@@ -65,103 +64,81 @@ public class TapaPagerActivity extends AppCompatActivity {
                 .getSerializableExtra(EXTRA_TAPA_ID);
 
         Log.d(TAG, "---> Need tapaId:" + tapaId);
+        selectedTapaId = tapaId;
 
-        //mViewPager = (ViewPager) findViewById(R.id.activity_tapa_pager_view_pager);
+        //viewPager = (ViewPager) findViewById(R.id.activity_tapa_pager_view_pager);
 
+        initPresenter();
+        initAdapter();
+        initUI();
 
-        RxFirebaseDatabase.observeSingleValueEvent(dao.getTapasOrderByNameQuery(), //DataSnapshotMapper.listOf(Tapa.class))
-                new Func1<DataSnapshot, List<Tapa>>() {
-                    @Override
-                    public List<Tapa> call(DataSnapshot dataSnapshot) {
-                        List<Tapa> tapas = new ArrayList<Tapa>();
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            Tapa tapa = child.getValue(Tapa.class);
-                            if (tapa == null) {
-                                Log.d(TAG, "Object not a Tapa");
-                            } else {
-                                tapa.setId(child.getKey());
-                                tapas.add(tapa);
-                            }
-                        }
+        refreshList();
+    }
 
-                        return tapas;
-                    }
-                })
-                .subscribe(new Observer<List<Tapa>>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "---> RxFirebaseDatabase.observeSingleValueEvent COMPLETED");
-                    }
+    private void initPresenter() {
+        presenter = new TapaListPresenterImpl(MyApplication.get(this).getDatabaseHelper()); //, MyApplication.get(getActivity()).getAuthenticationHelper());
+        presenter.setView(this);
+    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, e.toString());
-//                        showRefresh(false);
-                    }
-
-                    @Override
-                    public void onNext(List<Tapa> tapas) {
-                        Log.d(TAG, "---> RxFirebaseDatabase.observeSingleValueEvent NEXT");
-                        mTapas = tapas;
-//                        mAdapter.updateTapas(tapas);
-                        for (int i = 0; i < mTapas.size(); i++) {
-                            if (mTapas.get(i).getId().equals(tapaId)) {
-                                mViewPager.setCurrentItem(i);
-                                mAdapter.updateTapas(mTapas);
-                                break;
-                            }
-                        }
-                    }
-                });
-
-//        mTapas = dao.getTapas(); //new ArrayList<Tapa>(DummyData.getDummyTapasAsHashMap().values());//CrimeLab.get(this).getCrimes();
+    private void initAdapter() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        mAdapter = new TapaPagerAdapter(fragmentManager, mTapas);
-        mViewPager.setAdapter(mAdapter);
-/*
-        mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
+        adapter = new TapaPagerAdapter(fragmentManager);
+        viewPager.setAdapter(adapter);
+    }
 
-            @Override
-            public Fragment getItem(int position) {
-                Tapa tapa = mTapas.get(position);
-                return TapaFragment.newInstance(tapa.getId());
-            }
-
-            @Override
-            public int getCount() {
-                return (mTapas == null ? 0 : mTapas.size());
-            }
-
-            public void updateTapas(List<Tapa> tapas) {
-                mTapas.clear();
-                mTapas.addAll(tapas);
-                notifyDataSetChanged();
-            }
-
-        });
-*/
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+    private void initUI() {
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 
             @Override
             public void onPageSelected(int position) {
-                Tapa tapa = mTapas.get(position);
-                if (tapa.getName() != null) {
-                    setTitle(tapa.getName());
-                }
+//                Tapa tapa = tapas.get(position);
+                adapter.getItem(position);
+//                presenter.
+//                if (tapa.getName() != null) {
+//                    setTitle(tapa.getName());
+//                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) { }
         });
+    }
 
-//        for (int i = 0; i < mTapas.size(); i++) {
-//            if (mTapas.get(i).getId().equals(tapaId)) {
-//                mViewPager.setCurrentItem(i);
-//                break;
-//            }
-//        }
+    private void refreshList() {
+        adapter.clearTapas();
+        presenter.requestTapasFromNetwork(viewId);
+//        viewPager.setCurrentItem(0);
+//        adapter.updateTapas(tapas);
+    }
+
+    @Override
+    public void sendNewTapaToAdapter(Tapa tapa) {
+        adapter.addNewTapa(tapa);
+        viewPager.setCurrentItem(adapter.getPositionFromId(selectedTapaId));
+    }
+
+    @Override
+    public void showErrorMessage() {
+
+    }
+
+    @Override
+    public void removeCallbacksFromFirebase() {
+        presenter.removeTapaCallbacks();
+        //presenter.startTapaNotificationService();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public int getViewId() {
+        return viewId;
     }
 
 }

@@ -27,21 +27,31 @@ import static com.jakewharton.rxbinding.internal.Preconditions.checkNotNull;
 
 public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder> {
 
-    private static TapaViewHolder.OpenTapaListener mTapaListener;
+    private static TapaViewHolder.OpenTapaListener tapaListener;
 
-    private List<Tapa> mTapas = new ArrayList<>();
+    private List<Tapa> tapas = new ArrayList<>();
 
     private final Picasso picasso;
 
 
-    public TapaAdapter(List<Tapa> mTapas, Picasso picasso) {
-        this.mTapas = mTapas;
-        this.picasso = picasso;
+    public TapaAdapter(List<Tapa> pTapas, Picasso pPicasso) {
+        tapas = pTapas;
+        picasso = pPicasso;
     }
 
-    public void updateTapas(List<Tapa> tapas) {
-        mTapas.clear();
-        mTapas.addAll(tapas);
+    public void clearTapas() {
+        tapas.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addNewTapa(Tapa tapa) {
+        tapas.add(tapa);
+        notifyDataSetChanged();
+    }
+
+    public void updateTapas(List<Tapa> pTapas) {
+        tapas.clear();
+        tapas.addAll(pTapas);
         notifyDataSetChanged();
     }
 
@@ -54,19 +64,23 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
 
     @Override
     public void onBindViewHolder(TapaViewHolder holder, int position) {
-        if (position < mTapas.size()) {
-            Tapa tapa = mTapas.get(position);
+        if (position < tapas.size()) {
+            Tapa tapa = tapas.get(position);
             holder.bindTapa(tapa, picasso);
         }
     }
 
     @Override
     public int getItemCount() {
-        return mTapas == null ? 0 : mTapas.size();
+        return tapas == null ? 0 : tapas.size();
     }
 
     public void setOpenTapaListener(TapaViewHolder.OpenTapaListener listener) {
-        mTapaListener = listener;
+        tapaListener = listener;
+    }
+
+    public void cleanup() {
+        tapaListener = null;
     }
 
 
@@ -83,18 +97,18 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
         @BindView(R.id.ratingTextView)
         TextView mRatingTextView;
 
-        private final View mView;
+        private final View view;
 
-        private Tapa mTapa;
+        private Tapa tapa;
 
         public TapaViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
-            mView = itemView;
+            view = itemView;
         }
 
         public void bindTapa(Tapa tapa, Picasso picasso) {
-            mTapa = tapa;
+            this.tapa = tapa;
             // TODO Usar como singleton
             picasso.load(tapa.getImageUrl())
                     .resize(MAX_WIDTH, MAX_HEIGHT)
@@ -105,17 +119,17 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
             mCategoryTextView.setText("Category of the tapa");
             mRatingTextView.setText("Rating: " + tapa.getLongitude() + "/5");
 
-            RxView.clicks(mView)
+            RxView.clicks(view)
                     .subscribe(new Action1<Void>() {
                         @Override
                         public void call(Void aVoid) {
-                            checkNotNull(mTapaListener, "Must implement OpenTapaListener");
-                            mTapaListener.open(mTapa);
+                            checkNotNull(tapaListener, "Must implement OpenTapaListener");
+                            tapaListener.open(TapaViewHolder.this.tapa);
                         }
 //                    })
 //                    .subscribe(onClickEvent -> {
-//                        checkNotNull(mTapaListener, "Must implement OpenTapaListener");
-//                        mTapaListener.open(tapa);
+//                        checkNotNull(tapaListener, "Must implement OpenTapaListener");
+//                        tapaListener.open(tapa);
                     });
         }
 
@@ -124,12 +138,6 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
             void open(Tapa tapa);
         }
 
-    }
-
-//    @Override
-    public void cleanup() {
-//        super.cleanup();
-        mTapaListener = null;
     }
 
 }
