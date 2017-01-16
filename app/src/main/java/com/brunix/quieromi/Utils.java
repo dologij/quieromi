@@ -1,9 +1,13 @@
 package com.brunix.quieromi;
 
 import com.brunix.quieromi.application.MyApplication;
+import com.brunix.quieromi.data.entity.Tapa;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.crash.FirebaseCrash;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -40,4 +44,23 @@ public class Utils {
         return String.format(Locale.getDefault(), MyApplication.instance.getString(R.string.random_username_generator_string_template), random.nextInt(5001));
     }
 
+    public static void orderListByName(List<Tapa> tapas) {
+        Collections.sort(tapas, new Comparator<Tapa>() {
+            @Override
+            public int compare(Tapa lhs, Tapa rhs) {
+                return lhs.getName().compareToIgnoreCase(rhs.getName());
+            }
+        });
+    }
+
+    public static int getPosInList (Tapa pTapa, List<Tapa> tapas) {
+        int pos = 0;
+        for (Tapa tapa : tapas) {
+            if (tapa.getId().equals(pTapa.getId())) {
+                break;
+            }
+            pos++;
+        }
+        return pos;
+    }
 }

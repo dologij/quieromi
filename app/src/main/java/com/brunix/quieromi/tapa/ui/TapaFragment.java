@@ -132,10 +132,13 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     }
 
     private void refreshUI() {
-        if (tapa != null && googleMap != null) {
+        if (tapa != null && googleMap != null && isAdded()) {
+
             idField.setText(tapa.getId());
             nameField.setText(tapa.getName());
-            String priceStr = String.valueOf(tapa.getPrice());
+            Double price = tapa.getPrice();
+            Resources resources = this.getResources();
+            String priceStr = String.format(resources.getString(R.string.price), String.valueOf(price));
             priceField.setText(priceStr);
 
             double longitud = tapa.getLongitude();
@@ -148,8 +151,7 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
             // Needs to call MapsInitializer before doing any CameraUpdateFactory calls
             MapsInitializer.initialize(this.getActivity());
 
-            Resources resources = this.getResources();
-            String snippet = String.format(resources.getString(R.string.price), priceStr);
+            String snippet = priceStr;
 
             drawMarker(longitud, latitud, tapa.getName(), snippet);
         }

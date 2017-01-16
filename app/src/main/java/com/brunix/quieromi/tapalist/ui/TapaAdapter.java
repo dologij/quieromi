@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
+import static com.brunix.quieromi.Utils.orderListByName;
 import static com.jakewharton.rxbinding.internal.Preconditions.checkNotNull;
 
 /**
@@ -50,20 +51,28 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
             Tapa tapa = it.next();
             if (tapa.getId().equals(pTapa.getId())) {
                 it.remove();
+                break;
             }
         }
         tapas.add(pTapa);
+        orderListByName(tapas);
         notifyDataSetChanged();
     }
 
+
+
     public void removeTapa(String tapaId) {
+        int pos = 0;
         for(Iterator<Tapa> it = tapas.iterator(); it.hasNext();){
             Tapa tapa = it.next();
             if (tapa.getId().equals(tapaId)) {
                 it.remove();
+                break;
             }
+            pos++;
         }
-        notifyDataSetChanged();
+        orderListByName(tapas);
+        notifyItemRemoved(pos);
     }
 
     public void updateTapas(List<Tapa> pTapas) {
@@ -98,6 +107,7 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
 
     public void cleanup() {
         tapaListener = null;
+        tapas = null;
     }
 
 

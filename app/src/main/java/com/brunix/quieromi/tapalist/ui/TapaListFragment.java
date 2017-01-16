@@ -2,6 +2,7 @@ package com.brunix.quieromi.tapalist.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,8 @@ public class TapaListFragment extends Fragment implements TapaListView {
 
     private final static String TAG = TapaListFragment.class.getSimpleName();
 
+    private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
+
     @Inject
     Picasso picasso;
 
@@ -60,6 +63,7 @@ public class TapaListFragment extends Fragment implements TapaListView {
     private Unbinder unbinder;
 
     private int viewId;
+    private Parcelable layoutManagerSavedState;
 
 
     public static TapaListFragment newInstance() {
@@ -153,33 +157,16 @@ public class TapaListFragment extends Fragment implements TapaListView {
     }
 
 
-
-/*
-    @Override
-    protected TapaListPresenterImpl getPresenter() {
-        if (presenter == null) {
-            presenter = new TapaListPresenterImpl();//(RemoteServiceImpl.getInstance());
-        }
-        return presenter;
-    }
-
-    @NonNull
-    @Override
-    protected View getFallbackView() {
-        return fab;
-    }
-*/
-
     @Override
     public void sendTapaToAdapter(Tapa tapa) {
         adapter.addTapa(tapa);
-        recyclerView.scrollToPosition(0);
+        //recyclerView.scrollToPosition(pos);
     }
 
     @Override
     public void removeTapaFromAdapter(String tapaId) {
         adapter.removeTapa(tapaId);
-        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+        //recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     @Override
