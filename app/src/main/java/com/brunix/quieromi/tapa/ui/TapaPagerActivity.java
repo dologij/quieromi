@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.brunix.quieromi.R;
 import com.brunix.quieromi.ViewIdManager;
@@ -63,7 +62,6 @@ public class TapaPagerActivity extends AppCompatActivity implements TapaListView
         final String tapaId = (String) getIntent()
                 .getSerializableExtra(EXTRA_TAPA_ID);
 
-        Log.d(TAG, "---> Need tapaId:" + tapaId);
         selectedTapaId = tapaId;
 
         //viewPager = (ViewPager) findViewById(R.id.activity_tapa_pager_view_pager);

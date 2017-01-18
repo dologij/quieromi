@@ -1,7 +1,12 @@
 package com.brunix.quieromi.tapa.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,7 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
+import com.brunix.quieromi.PictureUtils;
 import com.brunix.quieromi.R;
 import com.brunix.quieromi.application.MyApplication;
 import com.brunix.quieromi.data.entity.Tapa;
@@ -24,8 +32,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -37,6 +48,7 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     private final static String TAG = TapaFragment.class.getSimpleName();
 
     private static final String ARG_TAPA_ID = "tapa_id";
+    private static final int REQUEST_PHOTO= 2;
 
     private Tapa tapa;
 
@@ -44,6 +56,12 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
 
     @BindView(R.id.tapa_id)
     EditText idField;
+
+    @BindView(R.id.tapa_photo)
+    ImageView photoField;
+
+    @BindView(R.id.camera_btn)
+    ImageButton photoButton;
 
     @BindView(R.id.tapa_name)
     EditText nameField;
@@ -54,12 +72,13 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     @BindView(R.id.tapa_mapview)
     MapView tapaMapView;
 
+    private File photoFile;
+    Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
     private TapaPresenterImpl presenter;
 
     private Unbinder unbinder;
     private GoogleMap googleMap;
-
 
     /**
      * Required interface for hosting activities.
@@ -102,10 +121,6 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
 //        initAdapter();
         initUI(savedInstanceState);
 
-//        Tapa tapa = new Tapa();
-//        tapa.setId("TAPAID");
-//        tapa.setName("TAPANAME");
-//        refreshData(tapa);
     }
 
     private void initPresenter() {
@@ -114,7 +129,6 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     }
 
     private void initUI(@Nullable Bundle savedInstanceState) {
-//        idField.setText(tapaId);
 
         // Gets the MapView from the XML layout and creates it
         tapaMapView.onCreate(savedInstanceState);
@@ -123,6 +137,27 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
         tapaMapView.getMapAsync(this);
 
         presenter.requestTapaFromNetwork(tapaId);
+    }
+
+    private void updatePhotoView() {
+        if (photoFile == null || !photoFile.exists()) {
+            photoField.setImageDrawable(null);
+        } else {
+            Bitmap bitmap = PictureUtils.get(getActivity()).getScaledBitmap(
+                    photoFile.getPath(), getActivity());
+            photoField.setImageBitmap(bitmap);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == REQUEST_PHOTO) {
+            updatePhotoView();
+        }
     }
 
     @Override
@@ -140,6 +175,17 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
             Resources resources = this.getResources();
             String priceStr = String.format(resources.getString(R.string.price), String.valueOf(price));
             priceField.setText(priceStr);
+            photoFile = PictureUtils.get(getActivity()).getPhotoFile(tapa.getPhotoFilename());
+
+            boolean canTakePhoto = photoFile != null &&
+                    captureImage.resolveActivity(getActivity().getPackageManager()) != null;
+            photoButton.setEnabled(canTakePhoto);
+
+            if (canTakePhoto) {
+                Uri uri = Uri.fromFile(photoFile);
+                captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            }
+            updatePhotoView();
 
             double longitud = tapa.getLongitude();
             double latitud = tapa.getLatitude();
@@ -234,4 +280,10 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
         this.googleMap = googleMap;
         refreshData(tapa);
     }
+
+    @OnClick(R.id.camera_btn)
+    public void onCameraBtnClicked(ImageButton button) {
+        startActivityForResult(captureImage, REQUEST_PHOTO);
+    }
+
 }

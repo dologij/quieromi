@@ -39,8 +39,6 @@ public class TapaListFragment extends Fragment implements TapaListView {
 
     private final static String TAG = TapaListFragment.class.getSimpleName();
 
-    private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
-
     @Inject
     Picasso picasso;
 

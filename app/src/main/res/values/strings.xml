@@ -10,4 +10,7 @@
     <string name="quieromi_button">Quiero Mi</string>
     <string name="random_username_generator_string_template">User %1$d</string>
     <string name="price">%1$s €</string>
+    <string name="tapa_name_label"><![CDATA[Name & price]]></string>
+    <string name="tapa_name_hint">Cocretitas de tofús y muchas cosas vegetarianas ricas más</string>
+    <string name="tapa_price_hint">35.15 €</string>
 </resources>
