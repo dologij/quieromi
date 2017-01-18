@@ -1,6 +1,7 @@
 package com.brunix.quieromi.tapa.presenter;
 
 import com.brunix.quieromi.base.Presenter;
+import com.brunix.quieromi.data.entity.Tapa;
 import com.brunix.quieromi.tapa.view.TapaView;
 
 /**
@@ -10,6 +11,8 @@ import com.brunix.quieromi.tapa.view.TapaView;
 public interface TapaPresenter extends Presenter<TapaView> {
 
     void requestTapaFromNetwork(String key);
+
+    void saveTapaOnNetwork(Tapa tapa);
 
     void onDestroy();
 }

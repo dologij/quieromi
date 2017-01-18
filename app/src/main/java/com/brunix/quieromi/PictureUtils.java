@@ -68,4 +68,8 @@ public class PictureUtils {
         return new File(externalFilesDir, filename);
     }
 
+    public void clear() {
+        pictureUtils = null;
+        context = null;
+    }
 }

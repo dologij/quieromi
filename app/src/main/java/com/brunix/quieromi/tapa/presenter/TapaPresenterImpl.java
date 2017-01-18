@@ -30,6 +30,11 @@ public class TapaPresenterImpl implements TapaPresenter {
     }
 
     @Override
+    public void saveTapaOnNetwork(Tapa tapa) {
+        databaseHelper.sendTapaToFirebase(tapa);
+    }
+
+    @Override
     public void onDestroy() {
 
     }

@@ -3,6 +3,8 @@ package com.brunix.quieromi.data;
 import com.brunix.quieromi.DatabaseRefMap;
 import com.brunix.quieromi.data.entity.Tapa;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -54,10 +56,32 @@ public class DatabaseHelperImpl implements DatabaseHelper {
         listenerMap.put(objectId, refMap);
     }
 
+    // TODO: add listener?
     @Override
-    public void sendTapaToFirebase(Tapa tapa) {
-        //ChatMessage message = new ChatMessage(messageToSend, username, lastMessageAuthor);
-        firebaseDatabase.getReference(FirebaseConstants.TAPAS_REFERENCE).push().setValue(tapa);
+    public void sendTapaToFirebase(final Tapa tapa) {
+        final DatabaseReference ref = firebaseDatabase.getReference(FirebaseConstants.TAPAS_REFERENCE + "/" + tapa.getId());
+                ref.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        // The tapa already exists, it must be updated
+                        if (dataSnapshot.exists()) {
+                            ref.updateChildren(tapa.toMap());
+                        // The tapa does not exist, it must be created
+                        } else {
+                            String newTapaKey = firebaseDatabase.getReference(FirebaseConstants.TAPAS_REFERENCE).push().getKey();
+                            Map tapaData = new HashMap();
+                            tapaData.put(FirebaseConstants.TAPAS_REFERENCE + "/" + newTapaKey, tapa.toMap());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
     }
 
     // TODO: call this when checking if the user is logged in (on presenter.checkIfUserIsLoggedIn())
