@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,7 +184,16 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
             photoButton.setEnabled(canTakePhoto);
 
             if (canTakePhoto) {
-                Uri uri = Uri.fromFile(photoFile);
+                Uri uri;
+                 // For targetSdkVersion >= 24, file: Uris are not allowed in Intents. If that
+                 // is the case, a FileProvider must be used to get a content: Uri.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    // content: Uri
+                    uri = FileProvider.getUriForFile(getActivity(), getActivity().getApplicationContext().getPackageName() + ".provider", photoFile);
+                } else {
+                    // file: Uri
+                    uri = Uri.fromFile(photoFile);
+                }
                 captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             }
             updatePhotoView();

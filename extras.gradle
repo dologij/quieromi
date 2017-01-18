@@ -3,7 +3,7 @@ ext.versions = [
 
         rxJava                       : '1.1.6',
         rxAndroid                    : '1.2.1',
-        supportLibs                  : '23.1.0',
+        supportLibs                  : '24.1.1',
         multidex                     : '1.0.1',
         butterKnife                  : '8.4.0',
         picasso                      : '2.5.2',
