@@ -8,5 +8,5 @@ import com.brunix.quieromi.data.entity.Tapa;
 
 public interface TapaView {
 
-    public void refreshData(Tapa tapa);
+    void refreshData(Tapa tapa);
 }

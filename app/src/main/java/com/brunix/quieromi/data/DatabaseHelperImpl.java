@@ -56,7 +56,6 @@ public class DatabaseHelperImpl implements DatabaseHelper {
         listenerMap.put(objectId, refMap);
     }
 
-    // TODO: add listener?
     @Override
     public void sendTapaToFirebase(final Tapa tapa) {
         final DatabaseReference ref = firebaseDatabase.getReference(FirebaseConstants.TAPAS_REFERENCE + "/" + tapa.getId());

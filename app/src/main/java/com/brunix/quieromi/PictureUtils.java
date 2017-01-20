@@ -10,22 +10,8 @@ import android.os.Environment;
 import java.io.File;
 
 public class PictureUtils {
-    private static PictureUtils pictureUtils;
 
-    private Context context;
-
-    public static PictureUtils get(Context ctx) {
-        if (pictureUtils == null) {
-            pictureUtils = new PictureUtils(ctx);
-        }
-        return pictureUtils;
-    }
-
-    private PictureUtils(Context ctx) {
-        context = ctx;
-    }
-
-    public Bitmap getScaledBitmap(String path, Activity activity) {
+    public static Bitmap getScaledBitmap(String path, Activity activity) {
         Point size = new Point();
         activity.getWindowManager().getDefaultDisplay()
                 .getSize(size);
@@ -33,7 +19,7 @@ public class PictureUtils {
         return getScaledBitmap(path, size.x, size.y);
     }
 
-    public Bitmap getScaledBitmap(String path, int destWidth, int destHeight) {
+    public static Bitmap getScaledBitmap(String path, int destWidth, int destHeight) {
         // read in the dimensions of the image on disk
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -57,7 +43,7 @@ public class PictureUtils {
         return BitmapFactory.decodeFile(path, options);
     }
 
-    public File getPhotoFile(String filename) {
+    public static File getPhotoFile(String filename, Context context) {
         File externalFilesDir = context
                 .getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
@@ -68,8 +54,4 @@ public class PictureUtils {
         return new File(externalFilesDir, filename);
     }
 
-    public void clear() {
-        pictureUtils = null;
-        context = null;
-    }
 }

@@ -155,7 +155,7 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
         if (photoFile == null || !photoFile.exists()) {
             photoField.setImageDrawable(null);
         } else {
-            Bitmap bitmap = PictureUtils.get(getActivity()).getScaledBitmap(
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
                     photoFile.getPath(), getActivity());
             photoField.setImageBitmap(bitmap);
         }
@@ -191,7 +191,7 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
             Resources resources = this.getResources();
             String priceStr = String.format(resources.getString(R.string.price), String.valueOf(price));
             priceField.setText(priceStr);
-            photoFile = PictureUtils.get(getActivity()).getPhotoFile(tapa.getPhotoFilename());
+            photoFile = PictureUtils.getPhotoFile(tapa.getPhotoFilename(), getActivity());
 
             boolean canTakePhoto = photoFile != null &&
                     captureImage.resolveActivity(getActivity().getPackageManager()) != null;
@@ -260,7 +260,7 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
         if (tapaMapView != null) {
             tapaMapView.onDestroy();
         }
-        PictureUtils.get(getActivity()).clear();
+//        PictureUtils.get(getActivity()).clear();
     }
 
     @Override
