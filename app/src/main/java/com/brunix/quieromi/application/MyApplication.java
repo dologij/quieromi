@@ -3,15 +3,13 @@ package com.brunix.quieromi.application;
 import android.content.Context;
 import android.support.multidex.MultiDexApplication;
 
-import com.alterego.advancedandroidlogger.implementations.DetailedAndroidLogger;
-import com.alterego.advancedandroidlogger.interfaces.IAndroidLogger;
 import com.brunix.quieromi.BuildConfig;
 import com.brunix.quieromi.data.DatabaseHelper;
 import com.brunix.quieromi.data.DatabaseHelperImpl;
 import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -87,8 +85,9 @@ public class MyApplication extends MultiDexApplication {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true); // dangerous, maybe this should not be called
             instance = this;
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
 //            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-            databaseHelper = new DatabaseHelperImpl(firebaseDatabase);
+            databaseHelper = new DatabaseHelperImpl(firebaseDatabase, firebaseStorage);
 //            authenticationHelper = new AuthenticationHelperImpl(firebaseAuth);
         }
 

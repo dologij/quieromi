@@ -7,6 +7,7 @@ ext.versions = [
         multidex                     : '1.0.1',
         butterKnife                  : '8.4.0',
         picasso                      : '2.5.2',
+        okhttp                      : '2.4.0',
         parceler                     : '1.1.5',
         annotation                   : '1.2',
 

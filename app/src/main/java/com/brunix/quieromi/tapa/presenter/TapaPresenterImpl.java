@@ -1,5 +1,7 @@
 package com.brunix.quieromi.tapa.presenter;
 
+import android.net.Uri;
+
 import com.brunix.quieromi.Utils;
 import com.brunix.quieromi.data.DatabaseHelper;
 import com.brunix.quieromi.data.entity.Tapa;
@@ -30,8 +32,8 @@ public class TapaPresenterImpl implements TapaPresenter {
     }
 
     @Override
-    public void saveTapaOnNetwork(Tapa tapa) {
-        databaseHelper.sendTapaToFirebase(tapa);
+    public void saveTapaOnNetwork(Tapa tapa, Uri imageUri) {
+        databaseHelper.sendTapaToFirebase(tapa, imageUri);
     }
 
     @Override

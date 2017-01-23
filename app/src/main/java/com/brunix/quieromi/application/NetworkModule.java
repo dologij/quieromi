@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.brunix.quieromi.BuildConfig;
 import com.brunix.quieromi.data.RemoteServiceImpl;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 import javax.inject.Singleton;
@@ -42,6 +43,13 @@ public class NetworkModule {
     @Provides
     @Singleton
     public Picasso providePicasso() {
+        Picasso.Builder builder = new Picasso.Builder(applicationContext);
+        builder.downloader(new OkHttpDownloader(applicationContext, Integer.MAX_VALUE));
+        Picasso built = builder.build();
+        built.setIndicatorsEnabled(true);
+        built.setLoggingEnabled(true);
+        Picasso.setSingletonInstance(built);
+
         return Picasso.with(applicationContext);
     }
 

@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -23,6 +22,7 @@ import android.widget.ImageView;
 
 import com.brunix.quieromi.PictureUtils;
 import com.brunix.quieromi.R;
+import com.brunix.quieromi.UIConstants;
 import com.brunix.quieromi.application.MyApplication;
 import com.brunix.quieromi.data.entity.Tapa;
 import com.brunix.quieromi.tapa.presenter.TapaPresenterImpl;
@@ -35,13 +35,13 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +59,9 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     private static final String ARG_TAPA_ID = "tapa_id";
     private static final int REQUEST_PHOTO= 2;
 
+    @Inject
+    Picasso picasso;
+
     private Tapa tapa;
 
     private String tapaId;
@@ -67,7 +70,7 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     EditText idField;
 
     @BindView(R.id.tapa_photo)
-    ImageView photoField;
+    ImageView photoImageView;
 
     @BindView(R.id.camera_btn)
     ImageButton photoButton;
@@ -152,13 +155,50 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     }
 
     private void updatePhotoView() {
-        if (photoFile == null || !photoFile.exists()) {
-            photoField.setImageDrawable(null);
-        } else {
-            Bitmap bitmap = PictureUtils.getScaledBitmap(
-                    photoFile.getPath(), getActivity());
-            photoField.setImageBitmap(bitmap);
-        }
+        // Try to fetch the image from Firebase
+        picasso.load(tapa.getImageUrl())
+                .placeholder(R.mipmap.ic_file_not_found)
+                .resize(UIConstants.IMG_LIST_MAX_WIDTH, UIConstants.IMG_LIST_MAX_HEIGHT)
+                .centerCrop()
+                .networkPolicy(NetworkPolicy.OFFLINE)
+                .into(photoImageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "Fetched image from cache:" + tapa.getImageUrl());
+                    }
+
+                    @Override
+                    public void onError() {
+                        //Try again online if cache failed
+                        picasso.load(tapa.getImageUrl())
+                                .placeholder(R.mipmap.ic_file_not_found)
+                                .resize(UIConstants.IMG_LIST_MAX_WIDTH, UIConstants.IMG_LIST_MAX_HEIGHT)
+                                .centerCrop()
+                                .error(R.drawable.waffles)
+                                .into(photoImageView, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Log.d(TAG, "Fetched image from network:" + tapa.getImageUrl());
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        Log.v(TAG,"Could not fetch image");
+                                        // If not in Firebase, try to fetch it from local storage
+                                        if (photoFile == null || !photoFile.exists()) {
+                                            photoImageView.setImageDrawable(null);
+                                        } else {
+                                            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                                                    photoFile.getPath(), getActivity());
+                                            photoImageView.setImageBitmap(bitmap);
+                                        }
+
+                                    }
+                                });
+                    }
+                });
+
+
     }
 
     @Override
@@ -316,7 +356,7 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
     @OnClick(R.id.edit_btn)
     public void onEditBtnClicked(ImageButton button) {
         refreshTapaFromUI();
-        presenter.saveTapaOnNetwork(tapa);
+        presenter.saveTapaOnNetwork(tapa, uri);
     }
 
     private void refreshTapaFromUI() {
@@ -325,25 +365,6 @@ public class TapaFragment extends Fragment implements TapaView, OnMapReadyCallba
         //tapa.setPrice(Double.valueOf(priceField.getText().toString()));
         tapa.setPrice(new Double("12.34"));
 
-        // Create a storage reference from our app
-        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://quieromi-10873.appspot.com");
-        //StorageReference mountainImagesRef = storageRef.child("images/mountains.jpg");
-
-        StorageReference riversRef = storageRef.child("images/"+tapa.getPhotoFilename());
-        UploadTask uploadTask = riversRef.putFile(uri);
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-            }
-        });
 
     }
 

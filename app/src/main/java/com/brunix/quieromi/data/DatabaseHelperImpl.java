@@ -1,7 +1,12 @@
 package com.brunix.quieromi.data;
 
+import android.net.Uri;
+import android.support.annotation.NonNull;
+
 import com.brunix.quieromi.DatabaseRefMap;
 import com.brunix.quieromi.data.entity.Tapa;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -9,6 +14,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,11 +30,13 @@ import java.util.Map;
 public class DatabaseHelperImpl implements DatabaseHelper {
 
     private final FirebaseDatabase firebaseDatabase;
+    FirebaseStorage firebaseStorage;
     private Query mMessageQuery;
     private HashMap<Integer, DatabaseRefMap> listenerMap = new HashMap<>();
 
-    public DatabaseHelperImpl(FirebaseDatabase firebaseDatabase) {
+    public DatabaseHelperImpl(FirebaseDatabase firebaseDatabase, FirebaseStorage firebaseStorage) {
         this.firebaseDatabase = firebaseDatabase;
+        this.firebaseStorage = firebaseStorage;
     }
 
     @Override
@@ -57,7 +67,7 @@ public class DatabaseHelperImpl implements DatabaseHelper {
     }
 
     @Override
-    public void sendTapaToFirebase(final Tapa tapa) {
+    public void sendTapaToFirebase(final Tapa tapa, final Uri imageUri) {
         final DatabaseReference ref = firebaseDatabase.getReference(FirebaseConstants.TAPAS_REFERENCE + "/" + tapa.getId());
                 ref.addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -72,6 +82,9 @@ public class DatabaseHelperImpl implements DatabaseHelper {
                             Map tapaData = new HashMap();
                             tapaData.put(FirebaseConstants.TAPAS_REFERENCE + "/" + newTapaKey, tapa.toMap());
                         }
+
+                        sendImageToFirebase(ref, tapa, imageUri);
+
                     }
 
                     @Override
@@ -81,6 +94,29 @@ public class DatabaseHelperImpl implements DatabaseHelper {
                 }
         );
 
+    }
+
+    private void sendImageToFirebase (final DatabaseReference ref, final Tapa tapa, final Uri imageUri) {
+        // Create a storage reference from our app
+        StorageReference storageRef = firebaseStorage.getReference();
+
+        StorageReference imagesRef = storageRef.child(FirebaseConstants.TAPAS_REFERENCE + "/" + tapa.getPhotoFilename());
+        UploadTask uploadTask = imagesRef.putFile(imageUri);
+        // Register observers to listen for when the download is done or if it fails
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                tapa.setImageUrl(downloadUrl.toString());
+                ref.updateChildren(tapa.toMap());
+            }
+        });
     }
 
     // TODO: call this when checking if the user is logged in (on presenter.checkIfUserIsLoggedIn())

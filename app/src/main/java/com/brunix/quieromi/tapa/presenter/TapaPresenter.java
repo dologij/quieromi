@@ -1,5 +1,7 @@
 package com.brunix.quieromi.tapa.presenter;
 
+import android.net.Uri;
+
 import com.brunix.quieromi.base.Presenter;
 import com.brunix.quieromi.data.entity.Tapa;
 import com.brunix.quieromi.tapa.view.TapaView;
@@ -12,7 +14,7 @@ public interface TapaPresenter extends Presenter<TapaView> {
 
     void requestTapaFromNetwork(String key);
 
-    void saveTapaOnNetwork(Tapa tapa);
+    void saveTapaOnNetwork(Tapa tapa, Uri imageUri);
 
     void onDestroy();
 }

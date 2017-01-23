@@ -1,6 +1,7 @@
 package com.brunix.quieromi.tapalist.ui;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,8 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brunix.quieromi.R;
+import com.brunix.quieromi.UIConstants;
 import com.brunix.quieromi.data.entity.Tapa;
 import com.jakewharton.rxbinding.view.RxView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,6 +32,8 @@ import static com.jakewharton.rxbinding.internal.Preconditions.checkNotNull;
  */
 
 public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder> {
+
+    private final static String TAG = TapaAdapter.class.getSimpleName();
 
     private static TapaViewHolder.OpenTapaListener tapaListener;
 
@@ -112,17 +118,15 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
 
 
     public static class TapaViewHolder extends RecyclerView.ViewHolder {
-        private static final int MAX_WIDTH = 200;
-        private static final int MAX_HEIGHT = 200;
 
         @BindView(R.id.tapaImageView)
-        ImageView mTapaImageView;
+        ImageView tapaImageView;
         @BindView(R.id.tapaNameTextView)
-        TextView mNameTextView;
+        TextView nameTextView;
         @BindView(R.id.categoryTextView)
-        TextView mCategoryTextView;
+        TextView categoryTextView;
         @BindView(R.id.ratingTextView)
-        TextView mRatingTextView;
+        TextView ratingTextView;
 
         private final View view;
 
@@ -134,17 +138,50 @@ public class TapaAdapter extends RecyclerView.Adapter<TapaAdapter.TapaViewHolder
             view = itemView;
         }
 
-        public void bindTapa(Tapa tapa, Picasso picasso) {
+        public void bindTapa(final Tapa tapa, final Picasso picasso) {
             this.tapa = tapa;
             // TODO Usar como singleton
-            picasso.load(tapa.getImageUrl())
-                    .resize(MAX_WIDTH, MAX_HEIGHT)
-                    .centerCrop()
-                    .into(mTapaImageView);
+//            picasso.load(tapa.getImageUrl())
+//                    .resize(MAX_WIDTH, MAX_HEIGHT)
+//                    .centerCrop()
+//                    .into(tapaImageView);
 
-            mNameTextView.setText(tapa.getName());
-            mCategoryTextView.setText("Category of the tapa");
-            mRatingTextView.setText("Rating: " + tapa.getLongitude() + "/5");
+            picasso.load(tapa.getImageUrl())
+                    .placeholder(R.mipmap.ic_file_not_found)
+                    .resize(UIConstants.IMG_MAX_WIDTH, UIConstants.IMG_MAX_HEIGHT)
+                    .centerCrop()
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(tapaImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d(TAG, "Fetched image from cache:" + tapa.getImageUrl());
+                        }
+
+                        @Override
+                        public void onError() {
+                            //Try again online if cache failed
+                            picasso.load(tapa.getImageUrl())
+                                    .placeholder(R.mipmap.ic_file_not_found)
+                                    .resize(UIConstants.IMG_MAX_WIDTH, UIConstants.IMG_MAX_HEIGHT)
+                                    .centerCrop()
+                                    .error(R.drawable.waffles)
+                                    .into(tapaImageView, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            Log.d(TAG, "Fetched image from network:" + tapa.getImageUrl());
+                                        }
+
+                                        @Override
+                                        public void onError() {
+                                            Log.v(TAG,"Could not fetch image");
+                                        }
+                                    });
+                        }
+                    });
+
+            nameTextView.setText(tapa.getName());
+            categoryTextView.setText("Category of the tapa");
+            ratingTextView.setText("Rating: " + tapa.getLongitude() + "/5");
 
             RxView.clicks(view)
                     .subscribe(new Action1<Void>() {
