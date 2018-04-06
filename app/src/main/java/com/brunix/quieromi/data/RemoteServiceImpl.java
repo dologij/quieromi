@@ -2,7 +2,6 @@ package com.brunix.quieromi.data;
 
 import com.brunix.quieromi.data.entity.Tapa;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import javax.inject.Inject;
 
 import retrofit2.Retrofit;
 import rx.Observable;
-import rx.Observer;
 import rx.functions.Func1;
 
 /**

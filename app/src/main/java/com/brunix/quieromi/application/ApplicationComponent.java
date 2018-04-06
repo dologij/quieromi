@@ -2,8 +2,8 @@ package com.brunix.quieromi.application;
 
 import com.brunix.quieromi.MainFragment;
 import com.brunix.quieromi.tapa.ui.TapaFragment;
-import com.brunix.quieromi.tapalist.ui.TapaListFragment;
 import com.brunix.quieromi.tapa.ui.TapaPagerActivity;
+import com.brunix.quieromi.tapalist.ui.TapaListFragment;
 
 import javax.inject.Singleton;
 

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.brunix.quieromi.data.Dao;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Singleton;
 

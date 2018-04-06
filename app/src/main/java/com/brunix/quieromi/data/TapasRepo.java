@@ -3,7 +3,6 @@ package com.brunix.quieromi.data;
 import com.brunix.quieromi.data.entity.Tapa;
 
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 
